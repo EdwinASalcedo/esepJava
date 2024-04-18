@@ -1,7 +1,6 @@
 package com.example.helloworld;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 public class InMemoryDB {
     private Map<String, Integer> data;
@@ -13,12 +12,10 @@ public class InMemoryDB {
         this.inTransaction = false;
         this.transactionData = new HashMap<>();
     }
-    public void begin_transaction() {
-        if(!inTransaction)
-        {
-            transactionData.clear();
-            inTransaction = true;
-        }
+    public int get(String key) {
+        if (data.containsKey(key))
+            return data.get(key);
+        return -1; // doc says null but get() has to return int
     }
     public void put(String key, int value) {
         if (!inTransaction)
@@ -26,10 +23,12 @@ public class InMemoryDB {
         // Otherwise transaction IS in progress
         transactionData.put(key, value);
     }
-    public int get(String key) {
-        if (data.containsKey(key))
-            return data.get(key);
-        return -1; // doc says null but get() has to return int
+    public void begin_transaction() {
+        if(!inTransaction)
+        {
+            transactionData.clear();
+            inTransaction = true;
+        }
     }
     public void commit() {
         if (inTransaction) {
